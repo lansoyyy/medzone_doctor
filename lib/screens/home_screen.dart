@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medzone/screens/appointments_tab.dart';
-import 'package:medzone/screens/history_tab.dart';
-import 'package:medzone/screens/home_tab.dart';
+import 'package:medzone/screens/messages_tab.dart';
+import 'package:medzone/screens/mypatients_tab.dart';
 import 'package:medzone/screens/profile_tab.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,9 +21,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   final List<Widget> children = [
-    const HomeTab(),
     const AppointmentsTab(),
-    const HistoryTab(),
+    const MyPatients(),
+    const MessagesTab(),
     const ProfileTab(),
   ];
 
@@ -38,17 +38,13 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: Colors.grey,
         onTap: onTabTapped,
         currentIndex: currentIndex,
-        backgroundColor: Colors.black,
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-              ),
-              label: 'Home'),
-          BottomNavigationBarItem(
               icon: Icon(Icons.calendar_month), label: 'Appointments'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person), label: 'My Patients'),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Message'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Profile'),
         ],
       ),
     );

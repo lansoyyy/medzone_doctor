@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:medzone/widgets/text_widget.dart';
 
-class HistoryTab extends StatelessWidget {
-  const HistoryTab({super.key});
+class MyPatients extends StatelessWidget {
+  const MyPatients({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class HistoryTab extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     TextWidget(
-                      text: 'History',
+                      text: 'Patients',
                       fontSize: 24,
                       fontFamily: 'Bold',
                     ),

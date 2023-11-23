@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medzone/widgets/button_widget.dart';
 import 'package:medzone/widgets/text_widget.dart';
 
 class AppointmentsTab extends StatelessWidget {
@@ -73,7 +74,7 @@ class AppointmentsTab extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         TextWidget(
-                                          text: 'Dr. John Rivera',
+                                          text: 'John Doe',
                                           fontSize: 14,
                                           fontFamily: 'Bold',
                                         ),
@@ -81,7 +82,7 @@ class AppointmentsTab extends StatelessWidget {
                                           height: 5,
                                         ),
                                         TextWidget(
-                                          text: 'Neurologist',
+                                          text: '"I need help please"',
                                           fontSize: 12,
                                           fontFamily: 'Regular',
                                         ),
@@ -93,6 +94,38 @@ class AppointmentsTab extends StatelessWidget {
                                           fontSize: 12,
                                           fontFamily: 'Medium',
                                         ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        i == 0
+                                            ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  ButtonWidget(
+                                                    radius: 100,
+                                                    width: 75,
+                                                    height: 30,
+                                                    fontSize: 12,
+                                                    label: 'Accept',
+                                                    onPressed: () {},
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  ButtonWidget(
+                                                    color: Colors.red,
+                                                    radius: 100,
+                                                    width: 75,
+                                                    height: 30,
+                                                    fontSize: 12,
+                                                    label: 'Reject',
+                                                    onPressed: () {},
+                                                  ),
+                                                ],
+                                              )
+                                            : const SizedBox(),
                                       ],
                                     ),
                                   ],

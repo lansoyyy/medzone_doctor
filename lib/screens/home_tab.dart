@@ -39,7 +39,7 @@ class _HomeTabState extends State<HomeTab> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         TextWidget(
-                          text: 'Hello User!',
+                          text: 'Hello Doctor!',
                           fontSize: 18,
                           fontFamily: 'Bold',
                         ),

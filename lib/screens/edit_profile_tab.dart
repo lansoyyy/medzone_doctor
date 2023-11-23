@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:medzone/screens/auth/login_screen.dart';
 import 'package:medzone/screens/home_screen.dart';
 import 'package:medzone/widgets/button_widget.dart';
 import 'package:medzone/widgets/text_widget.dart';
@@ -18,6 +17,8 @@ class _EditProfileTabState extends State<EditProfileTab> {
   final middlenameController = TextEditingController();
   final lastnameController = TextEditingController();
   final dateController = TextEditingController();
+
+  final numberController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +91,17 @@ class _EditProfileTabState extends State<EditProfileTab> {
                         label: 'Last Name',
                         hintColor: Colors.black,
                         controller: lastnameController,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Center(
+                      child: TextFieldWidget(
+                        inputType: TextInputType.number,
+                        label: 'Contact Number',
+                        hintColor: Colors.black,
+                        controller: numberController,
                       ),
                     ),
                     const SizedBox(
