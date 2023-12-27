@@ -7,7 +7,14 @@ import 'package:medzone/widgets/text_widget.dart';
 import 'package:medzone/widgets/textfield_widget.dart';
 
 class SignupScreen2 extends StatefulWidget {
-  const SignupScreen2({super.key});
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
+
+  SignupScreen2({
+    super.key,
+    required this.emailController,
+    required this.passwordController,
+  });
 
   @override
   State<SignupScreen2> createState() => _SignupScreen2State();
@@ -288,6 +295,8 @@ class _SignupScreen2State extends State<SignupScreen2> {
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => SignupScreen3(
+                              emailController: widget.emailController,
+                              passwordController: widget.passwordController,
                               firstnameController: firstnameController,
                               middlenameController: middlenameController,
                               lastnameController: lastnameController,

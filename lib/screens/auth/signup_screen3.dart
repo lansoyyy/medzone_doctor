@@ -1,10 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:medzone/screens/auth/login_screen.dart';
+import 'package:medzone/services/add_user.dart';
 import 'package:medzone/utils/colors.dart';
 import 'package:medzone/widgets/button_widget.dart';
 import 'package:medzone/widgets/text_widget.dart';
 import 'package:medzone/widgets/textfield_widget.dart';
+
+import '../../widgets/toast_widget.dart';
+import '../home_screen.dart';
 
 class SignupScreen3 extends StatefulWidget {
   var firstnameController = TextEditingController();
@@ -13,12 +17,16 @@ class SignupScreen3 extends StatefulWidget {
   var nicknameController = TextEditingController();
   var suffixController = TextEditingController();
   var dateController = TextEditingController();
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
 
   String selectedSex = 'Male';
   String selectedGender = 'Male';
 
   SignupScreen3(
       {super.key,
+      required this.emailController,
+      required this.passwordController,
       required this.firstnameController,
       required this.middlenameController,
       required this.lastnameController,
@@ -311,8 +319,7 @@ class _SignupScreen3State extends State<SignupScreen3> {
                   child: ButtonWidget(
                     label: 'Signup',
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => const LoginScreen()));
+                      register(context);
                     },
                   ),
                 ),
@@ -354,6 +361,41 @@ class _SignupScreen3State extends State<SignupScreen3> {
       });
     } else {
       return null;
+    }
+  }
+
+  register(context) async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: widget.emailController.text,
+          password: widget.passwordController.text);
+
+      addUser(
+          widget.emailController.text,
+          widget.firstnameController.text,
+          widget.middlenameController.text,
+          widget.lastnameController.text,
+          widget.nicknameController.text,
+          widget.suffixController.text,
+          widget.dateController.text,
+          widget.selectedSex,
+          widget.selectedGender);
+
+      showToast('Account created succesfully!');
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomeScreen()));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        showToast('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        showToast('The account already exists for that email.');
+      } else if (e.code == 'invalid-email') {
+        showToast('The email address is not valid.');
+      } else {
+        showToast(e.toString());
+      }
+    } on Exception catch (e) {
+      showToast("An error occurred: $e");
     }
   }
 }

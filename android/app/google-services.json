@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "424552384990",
+    "project_id": "medzone-3d7aa",
+    "storage_bucket": "medzone-3d7aa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:424552384990:android:95a6490b79490b298bf54f",
+        "android_client_info": {
+          "package_name": "com.example.medzone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6n-hAs_dTBRfgcnUqnsfChU3INLTbF0c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -106,7 +106,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     label: 'Next',
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const SignupScreen2()));
+                          builder: (context) => SignupScreen2(
+                                emailController: emailController,
+                                passwordController: passwordController,
+                              )));
                     },
                   ),
                 ),
