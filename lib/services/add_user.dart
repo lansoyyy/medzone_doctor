@@ -24,7 +24,8 @@ Future addUser(email, fname, mname, lname, nname, suffix, bday, sex, gender,
     'stars': 0,
     'aboutme': aboutme,
     'type': type,
-    'number': number
+    'number': number,
+    'reviewers': []
   };
 
   await docUser.set(json);
