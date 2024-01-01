@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medzone/screens/home_screen.dart';
 import 'package:medzone/widgets/button_widget.dart';
@@ -109,8 +111,17 @@ class _EditProfileTabState extends State<EditProfileTab> {
                     ),
                     ButtonWidget(
                       label: 'Update',
-                      onPressed: () {
+                      onPressed: () async {
                         showToast('Profile updated!');
+                        await FirebaseFirestore.instance
+                            .collection('Doctors')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .update({
+                          'number': numberController.text,
+                          'fname': firstnameController.text,
+                          'mname': middlenameController.text,
+                          'lname': lastnameController.text
+                        });
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => const HomeScreen()));
                       },

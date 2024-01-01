@@ -19,12 +19,17 @@ class SignupScreen3 extends StatefulWidget {
   var dateController = TextEditingController();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
+  var aboutmeController = TextEditingController();
+  var numberController = TextEditingController();
 
   String selectedSex = 'Male';
   String selectedGender = 'Male';
+  String type;
 
   SignupScreen3(
       {super.key,
+      required this.numberController,
+      required this.type,
       required this.emailController,
       required this.passwordController,
       required this.firstnameController,
@@ -34,6 +39,7 @@ class SignupScreen3 extends StatefulWidget {
       required this.suffixController,
       required this.dateController,
       required this.selectedSex,
+      required this.aboutmeController,
       required this.selectedGender});
 
   @override
@@ -123,6 +129,28 @@ class _SignupScreen3State extends State<SignupScreen3> {
                     label: 'Nickname',
                     hintColor: Colors.black,
                     controller: widget.nicknameController,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: TextFieldWidget(
+                    isEnabled: false,
+                    label: 'Mobile Number',
+                    hintColor: Colors.black,
+                    controller: widget.numberController,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: TextFieldWidget(
+                    isEnabled: false,
+                    label: 'About Me',
+                    hintColor: Colors.black,
+                    controller: widget.aboutmeController,
                   ),
                 ),
                 const SizedBox(
@@ -379,7 +407,10 @@ class _SignupScreen3State extends State<SignupScreen3> {
           widget.suffixController.text,
           widget.dateController.text,
           widget.selectedSex,
-          widget.selectedGender);
+          widget.selectedGender,
+          widget.aboutmeController.text,
+          widget.type,
+          widget.numberController.text);
 
       showToast('Account created succesfully!');
       Navigator.of(context).pushReplacement(

@@ -27,12 +27,24 @@ class _SignupScreen2State extends State<SignupScreen2> {
   final dateController = TextEditingController();
   final nicknameController = TextEditingController();
   final suffixController = TextEditingController();
+  var aboutmeController = TextEditingController();
 
-  String selectedSex = 'Male'; // Default selected sex
-  String selectedGender = 'Male'; // Default selected gender
+  final numberController = TextEditingController();
+
+  String selectedSex = 'Male';
+  String selectedGender = 'Male';
 
   final List<String> sexList = ['Male', 'Female', 'Other'];
   final List<String> genderList = ['Male', 'Female', 'Non-binary', 'Other'];
+
+  String type = 'General';
+
+  final List<String> types = [
+    'General',
+    'Nutritionist',
+    'Dentist',
+    'Neurologist',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -116,9 +128,61 @@ class _SignupScreen2State extends State<SignupScreen2> {
                 ),
                 Center(
                   child: TextFieldWidget(
+                    label: 'Mobile Number',
+                    hintColor: Colors.black,
+                    controller: numberController,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: TextFieldWidget(
+                    label: 'About Me',
+                    hintColor: Colors.black,
+                    controller: aboutmeController,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: TextFieldWidget(
                     label: 'Suffix (Jr., I, II, III, Sr.)',
                     hintColor: Colors.black,
                     controller: suffixController,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextWidget(
+                          text: 'Specialty:',
+                          fontSize: 14,
+                        ),
+                        DropdownButton<String>(
+                          value: type,
+                          onChanged: (newValue) {
+                            setState(() {
+                              type = newValue!;
+                            });
+                          },
+                          items:
+                              types.map<DropdownMenuItem<String>>((String sex) {
+                            return DropdownMenuItem<String>(
+                              value: sex,
+                              child: Text(sex),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -295,6 +359,9 @@ class _SignupScreen2State extends State<SignupScreen2> {
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => SignupScreen3(
+                              numberController: numberController,
+                              type: type,
+                              aboutmeController: aboutmeController,
                               emailController: widget.emailController,
                               passwordController: widget.passwordController,
                               firstnameController: firstnameController,
