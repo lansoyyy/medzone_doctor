@@ -1,6 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-import 'package:medzone/widgets/text_widget.dart';
+import 'package:intl/intl.dart' show DateFormat, toBeginningOfSentenceCase;
+import '../../utils/colors.dart';
+
+import '../../widgets/text_widget.dart';
+import 'chat_page.dart';
 
 class MessagesTab extends StatefulWidget {
   const MessagesTab({super.key});
@@ -17,98 +24,124 @@ class _MessagesTabState extends State<MessagesTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-        child: SafeArea(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  TextWidget(
-                    text: 'Message',
-                    fontSize: 24,
-                    fontFamily: 'Bold',
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                child: SizedBox(
-                  child: ListView.builder(
-                      itemCount: 50,
-                      itemBuilder: ((context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 5, bottom: 5),
-                          child: ListTile(
-                            onTap: () async {
-                              // await FirebaseFirestore.instance
-                              //     .collection('Messages')
-                              //     .doc(data.docs[index].id)
-                              //     .update({'seen': true});
-                              // Navigator.of(context).push(MaterialPageRoute(
-                              //     builder: (context) => ChatPage(
-                              //           userId: data.docs[index]['userId'],
-                              //           userName: data.docs[index]
-                              //                   ['userName'] ??
-                              //               'User name',
-                              //         )));
-                            },
-                            leading: const CircleAvatar(
-                              maxRadius: 25,
-                              minRadius: 25,
-                              backgroundImage: NetworkImage(''),
-                              child: Icon(
-                                Icons.person,
-                                color: Colors.black,
-                                size: 35,
-                              ),
-                            ),
-                            subtitle: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextWidget(
-                                    text: 'John Doe',
-                                    fontSize: 15,
-                                    fontFamily: 'Bold',
-                                    color: Colors.black),
-                                Row(
+      appBar: AppBar(
+        title: TextWidget(text: 'Messages', fontSize: 18),
+      ),
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('Messages')
+                  .where('driverId',
+                      isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  print('error');
+                  return const Center(child: Text('Error'));
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 50),
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.black,
+                    )),
+                  );
+                }
+
+                final data = snapshot.requireData;
+                return Expanded(
+                  child: SizedBox(
+                    child: ListView.builder(
+                        itemCount: data.docs.length,
+                        itemBuilder: ((context, index) {
+                          return Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: ListTile(
+                                onTap: () async {
+                                  await FirebaseFirestore.instance
+                                      .collection('Messages')
+                                      .doc(data.docs[index].id)
+                                      .update({'seen': true});
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => ChatPage(
+                                            userId: data.docs[index]['userId'],
+                                            userName: data.docs[index]
+                                                    ['userName'] ??
+                                                'User name',
+                                          )));
+                                },
+                                leading: CircleAvatar(
+                                  maxRadius: 25,
+                                  minRadius: 25,
+                                  backgroundImage: NetworkImage(
+                                      data.docs[index]['userProfile']),
+                                ),
+                                title: data.docs[index]['seen'] == true
+                                    ? TextWidget(
+                                        text: data.docs[index]['userName'] ??
+                                            'User name',
+                                        fontSize: 15,
+                                        color: grey)
+                                    : TextWidget(
+                                        text: data.docs[index]['userName'] ??
+                                            'User name',
+                                        fontSize: 15,
+                                        color: Colors.black),
+                                subtitle: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text(
-                                      'Message here',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: 12,
-                                          color: Colors.black,
-                                          fontFamily: 'QBold'),
-                                    ),
-                                    TextWidget(
-                                        text: '11/23/2023',
-                                        fontSize: 12,
-                                        color: Colors.black),
+                                    data.docs[index]['seen'] == true
+                                        ? Text(
+                                            data.docs[index]['lastMessage'],
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                                fontSize: 12,
+                                                color: grey,
+                                                fontFamily: 'QRegular'),
+                                          )
+                                        : Text(
+                                            data.docs[index]['lastMessage'],
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w800,
+                                                fontSize: 12,
+                                                color: Colors.black,
+                                                fontFamily: 'QBold'),
+                                          ),
+                                    data.docs[index]['seen'] == true
+                                        ? TextWidget(
+                                            text: DateFormat.jm().format(data
+                                                .docs[index]['dateTime']
+                                                .toDate()),
+                                            fontSize: 12,
+                                            color: grey)
+                                        : TextWidget(
+                                            text: DateFormat.jm().format(data
+                                                .docs[index]['dateTime']
+                                                .toDate()),
+                                            fontSize: 12,
+                                            color: Colors.black),
                                   ],
                                 ),
-                              ],
-                            ),
-                            trailing: const Icon(
-                              Icons.arrow_right,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        );
-                      })),
-                ),
-              )
-            ],
-          ),
-        ),
+                                trailing: const Icon(
+                                  Icons.arrow_right,
+                                  color: grey,
+                                ),
+                              ));
+                        })),
+                  ),
+                );
+              }),
+        ],
       ),
     );
   }

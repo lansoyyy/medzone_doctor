@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:medzone/widgets/button_widget.dart';
 import 'package:medzone/widgets/text_widget.dart';
 
+import 'chat_page.dart';
+
 class AppointmentsTab extends StatelessWidget {
   const AppointmentsTab({super.key});
 
@@ -160,6 +162,14 @@ class AppointmentsTab extends StatelessWidget {
                                                               'status':
                                                                   'Completed'
                                                             });
+                                                            Navigator.of(context).push(
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            ChatPage(
+                                                                              userId: data.docs[index]['userId'],
+                                                                              userName: data.docs[index]['myname'] ?? 'User name',
+                                                                            )));
                                                           },
                                                         ),
                                                         const SizedBox(
