@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medzone/widgets/button_widget.dart';
 import 'package:medzone/widgets/text_widget.dart';
@@ -50,90 +52,152 @@ class AppointmentsTab extends StatelessWidget {
                   child: TabBarView(
                     children: [
                       for (int i = 0; i < 3; i++)
-                        ListView.builder(
-                          itemBuilder: (context, index) {
-                            return Card(
-                              child: SizedBox(
-                                height: 150,
-                                width: 400,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/doc1.png',
-                                      height: 100,
+                        StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Bookings')
+                                .where('doctorid',
+                                    isEqualTo:
+                                        FirebaseAuth.instance.currentUser!.uid)
+                                .where('status',
+                                    isEqualTo: i == 0
+                                        ? 'Pending'
+                                        : i == 1
+                                            ? 'Completed'
+                                            : 'Cancelled')
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                print(snapshot.error);
+                                return const Center(child: Text('Error'));
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Padding(
+                                  padding: EdgeInsets.only(top: 50),
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                  )),
+                                );
+                              }
+
+                              final data = snapshot.requireData;
+                              return ListView.builder(
+                                itemCount: data.docs.length,
+                                itemBuilder: (context, index) {
+                                  return Card(
+                                    child: SizedBox(
+                                      height: 150,
+                                      width: 400,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'assets/images/profile.png',
+                                            height: 100,
+                                          ),
+                                          const SizedBox(
+                                            width: 30,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              TextWidget(
+                                                text: data.docs[index]
+                                                    ['myname'],
+                                                fontSize: 14,
+                                                fontFamily: 'Bold',
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              TextWidget(
+                                                text:
+                                                    '"${data.docs[index]['problem']}"',
+                                                fontSize: 12,
+                                                fontFamily: 'Regular',
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              TextWidget(
+                                                text:
+                                                    '${data.docs[index]['date']} at ${data.docs[index]['time']}',
+                                                fontSize: 12,
+                                                fontFamily: 'Medium',
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              i == 0
+                                                  ? Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      children: [
+                                                        ButtonWidget(
+                                                          radius: 100,
+                                                          width: 75,
+                                                          height: 30,
+                                                          fontSize: 12,
+                                                          label: 'Accept',
+                                                          onPressed: () async {
+                                                            await FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'Bookings')
+                                                                .doc(data
+                                                                    .docs[index]
+                                                                    .id)
+                                                                .update({
+                                                              'status':
+                                                                  'Completed'
+                                                            });
+                                                          },
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 20,
+                                                        ),
+                                                        ButtonWidget(
+                                                          color: Colors.red,
+                                                          radius: 100,
+                                                          width: 75,
+                                                          height: 30,
+                                                          fontSize: 12,
+                                                          label: 'Reject',
+                                                          onPressed: () async {
+                                                            await FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'Bookings')
+                                                                .doc(data
+                                                                    .docs[index]
+                                                                    .id)
+                                                                .update({
+                                                              'status':
+                                                                  'Cancelled'
+                                                            });
+                                                          },
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : const SizedBox(),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    const SizedBox(
-                                      width: 30,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        TextWidget(
-                                          text: 'John Doe',
-                                          fontSize: 14,
-                                          fontFamily: 'Bold',
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        TextWidget(
-                                          text: '"I need help please"',
-                                          fontSize: 12,
-                                          fontFamily: 'Regular',
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        TextWidget(
-                                          text: 'October 25, 2023 at 5:30pm',
-                                          fontSize: 12,
-                                          fontFamily: 'Medium',
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        i == 0
-                                            ? Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  ButtonWidget(
-                                                    radius: 100,
-                                                    width: 75,
-                                                    height: 30,
-                                                    fontSize: 12,
-                                                    label: 'Accept',
-                                                    onPressed: () {},
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  ButtonWidget(
-                                                    color: Colors.red,
-                                                    radius: 100,
-                                                    width: 75,
-                                                    height: 30,
-                                                    fontSize: 12,
-                                                    label: 'Reject',
-                                                    onPressed: () {},
-                                                  ),
-                                                ],
-                                              )
-                                            : const SizedBox(),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                                  );
+                                },
+                              );
+                            }),
                     ],
                   ),
                 ),
