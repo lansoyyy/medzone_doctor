@@ -44,6 +44,10 @@ class _SignupScreen2State extends State<SignupScreen2> {
     'Nutritionist',
     'Dentist',
     'Neurologist',
+    'Dermatologist',
+    'Pediatrician',
+    'Psychiatrist',
+    'Cardiologist',
   ];
 
   @override
